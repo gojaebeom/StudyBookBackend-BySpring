@@ -15,20 +15,21 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:///c:/tmp/");
+//                .addResourceLocations("file:///c:/tmp/");
+                .addResourceLocations("file:///home/ubuntu/apps/studybook/upload/");
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new CorsIC())
-//                .addPathPatterns("/**");
-
-        registry.addInterceptor(new TokenValidationIC())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/images/**")
-                .excludePathPatterns("/api/users/kakao-login")
-                .excludePathPatterns("/api/posts")
-                .excludePathPatterns("/api/posts/{id}")
-                .excludePathPatterns("/api/naver/news");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+////        registry.addInterceptor(new CorsIC())
+////                .addPathPatterns("/**");
+//
+//        registry.addInterceptor(new TokenValidationIC())
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/images/**")
+//                .excludePathPatterns("/api/users/kakao-login")
+//                .excludePathPatterns("/api/posts")
+//                .excludePathPatterns("/api/posts/{id}")
+//                .excludePathPatterns("/api/naver/news");
+//    }
 }

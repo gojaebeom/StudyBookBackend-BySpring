@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "https://studybook.me")
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
@@ -82,9 +83,9 @@ public class UserController {
          * service를 통해 유저 수정
          * 이후 성공 반환
          */
-        String _tokenId = request.getAttribute("id").toString();
-        Long tokenId = Long.parseLong(_tokenId);
-        TokenService.isMatched(userEditDto.getId(), tokenId);
+//        String _tokenId = request.getAttribute("id").toString();
+//        Long tokenId = Long.parseLong(_tokenId);
+//        TokenService.isMatched(userEditDto.getId(), tokenId);
 
         System.out.println("먼저 나오는지 확인");
         System.out.println(userEditDto);
