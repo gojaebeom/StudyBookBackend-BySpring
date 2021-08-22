@@ -1,10 +1,7 @@
 package me.studybook.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +14,7 @@ import java.util.List;
 @Table(name = "posts")
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
 public class Post {
     @Id
@@ -26,8 +24,11 @@ public class Post {
     @Column(name = "title", length = 50, nullable = false)
     private String title;
 
-    @Column(name = "content", columnDefinition="LONGTEXT")
+    @Column(name = "content", columnDefinition="TEXT")
     private String content;
+
+    @Column(name ="views", columnDefinition = "integer default 0")
+    private Long views;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
@@ -38,12 +39,6 @@ public class Post {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-//    @OneToMany(mappedBy = "post")
-//    private List<PostTag> postTags = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "post")
-//    private List<PostLike> postLikes = new ArrayList<>();
 
     @Builder
     public Post(Long id, String title, String content, User user) {

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
 public class User {
 
@@ -25,8 +26,11 @@ public class User {
     @Column(name = "nickname", unique = true, length = 20, nullable = false)
     private String nickname;
 
-    @Column(name ="profile", length = 150)
+    @Column(name ="profile", length = 100)
     private String profile;
+
+    @Column(name ="profile_preview", length = 100)
+    private String profilePreview;
 
     @Column(name ="info", length = 150)
     private String info;
@@ -38,11 +42,12 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Builder
-    public User(Long id, String username, String nickname, String profile, String info) {
+    public User(Long id, String username, String nickname, String profile, String profilePreview, String info) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
         this.profile = profile;
+        this.profilePreview = profilePreview;
         this.info = info;
     }
 }

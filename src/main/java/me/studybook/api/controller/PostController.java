@@ -3,10 +3,12 @@ package me.studybook.api.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.studybook.api.dto.req.ReqPostCreateDto;
+import me.studybook.api.dto.req.ReqPostsDto;
 import me.studybook.api.dto.res.ResPostDetailDto;
 import me.studybook.api.dto.res.ResPostsDto;
 import me.studybook.api.service.PostService;
 import me.studybook.api.service.TokenService;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +27,12 @@ public class PostController {
 
 
     @GetMapping("")
-    public ResponseEntity index() throws Exception{
+    public ResponseEntity index(ReqPostsDto postsDto) throws Exception{
         log.info("POST:INDEX");
-        List<ResPostsDto> posts =  postService.index();
 
+        System.out.println(postsDto);
+
+        List<ResPostsDto> posts =  postService.index(postsDto);
         Map<String, Object> responses = new HashMap<>();
         responses.put("message", "Get posts success");
         responses.put("posts", posts);

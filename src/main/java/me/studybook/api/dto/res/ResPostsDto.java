@@ -16,17 +16,35 @@ public class ResPostsDto {
 
     private Long id;
     private String title;
+    private Long views;
     private String publishedAt;
     private UserMapper user;
     private List<String> tags;
 
     @Builder
-    public ResPostsDto(Long id, String title, String publishedAt, UserMapper user, List<String> tags) {
+    public ResPostsDto(Long id, String title, Long views, String publishedAt, UserMapper user, List<String> tags) {
         this.id = id;
         this.title = title;
+        this.views = views;
         this.publishedAt = publishedAt;
         this.user = user;
         this.tags = tags;
+    }
+
+    public static List<ResPostsDto> of(List<PostsMapper> _posts) {
+        List<ResPostsDto> postsDtos = new ArrayList<>();
+
+        for(PostsMapper post : _posts){
+            ResPostsDto resPostsDto = ResPostsDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .views(post.getViews())
+                    .publishedAt(TimeToNaturalTime.formatTimeString(post.getUpdatedAt()))
+                    .user(post.getUser())
+                    .build();
+            postsDtos.add(resPostsDto);
+        }
+        return postsDtos;
     }
 
     public static List<ResPostsDto> of(List<PostsMapper> _posts, List<PostTag> postTags) {
@@ -42,13 +60,13 @@ public class ResPostsDto {
             ResPostsDto resPostsDto = ResPostsDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
+                    .views(post.getViews())
                     .publishedAt(TimeToNaturalTime.formatTimeString(post.getUpdatedAt()))
                     .tags(tags)
                     .user(post.getUser())
                     .build();
             postsDtos.add(resPostsDto);
         }
-
         return postsDtos;
     }
 }

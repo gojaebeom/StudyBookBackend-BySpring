@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.studybook.api.domain.*;
 import me.studybook.api.dto.req.ReqPostCreateDto;
+import me.studybook.api.dto.req.ReqPostsDto;
 import me.studybook.api.dto.res.ResPostDetailDto;
 import me.studybook.api.dto.res.ResPostsDto;
 import me.studybook.api.repo.post.PostRepo;
@@ -12,12 +13,15 @@ import me.studybook.api.repo.post.TagRepo;
 import me.studybook.api.repo.post.mapper.PostDetailMapper;
 import me.studybook.api.repo.post.mapper.PostsMapper;
 import me.studybook.api.repo.user.UserRepo;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.net.BindException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,12 +35,23 @@ public class PostService {
     private UserRepo userRepo;
     private PostTagRepo postTagRepo;
 
-    public List<ResPostsDto> index() throws Exception {
+    public List<ResPostsDto> index(ReqPostsDto postsDto) throws Exception {
 
-        List<PostsMapper> _posts =  postRepo.findAllByOrderByIdDesc();
-        List<PostTag> postTags = postTagRepo.findAll();
+        List<PostsMapper> posts = null;
 
-        return ResPostsDto.of(_posts, postTags);
+
+
+        if(postsDto.getSort().equals("recent")){
+            posts = postRepo.findAllByTitleIsLikeOrderByUpdatedAtDesc("%"+postsDto.getKeyword()+"%");
+        }
+        else if(postsDto.getSort().equals("old")){
+            posts = postRepo.findAllByTitleIsLikeOrderByUpdatedAtAsc("%"+postsDto.getKeyword()+"%");
+        }
+        else if(postsDto.getSort().equals("views")){
+            posts = postRepo.findAllByTitleIsLikeOrderByViewsDesc("%"+postsDto.getKeyword()+"%");
+        }
+
+        return ResPostsDto.of(posts);
     }
 
     public List<ResPostsDto> index(Long id) throws Exception{
@@ -49,10 +64,23 @@ public class PostService {
 
     public ResPostDetailDto show(Long id) throws Exception {
 
-        PostDetailMapper _postDetail =  postRepo.findOneById(id);
+        Optional<Post> _post = postRepo.findById(id);
+        if(_post.isEmpty()){
+            throw new Exception("게시물이 존재하지 않습니다");
+        }
+        Post post = _post.get();
+        System.out.println(post.getViews());
+        if(post.getViews() == null){
+            post.setViews(1L);
+        }else{
+            post.setViews(post.getViews()+1);
+        }
+
+        PostDetailMapper postDetail =  postRepo.findOneById(id);
+
         List<PostTag> postTags = postTagRepo.findByPostId(id);
 
-        return ResPostDetailDto.of(_postDetail, postTags);
+        return ResPostDetailDto.of(postDetail, postTags);
     }
 
 

@@ -4,4 +4,5 @@ public interface  UserMapper{
     Long getId();
     String getNickname();
     String getProfile();
+    String getProfilePreview();
 }

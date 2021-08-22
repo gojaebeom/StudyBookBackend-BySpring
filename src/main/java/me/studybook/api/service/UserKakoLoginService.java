@@ -48,39 +48,16 @@ public class UserKakoLoginService {
         log.info("로그인 진행");
 
         UserMapper user = userRepo.findUserByUsername(kakaoProviderId);
-        String[] tokens = createJWTToken(user.getId());
+        String act = TokenService.createAct(user.getId(), user.getProfilePreview());
+        String rft = TokenService.createRft(user.getId());
 
         return ResUserLoginDto.builder()
-                .accessToken(tokens[0])
-                .userId(user.getId())
-                .profile(user.getProfile())
-                .refreshToken(tokens[1])
+                .accessToken(act)
+                .refreshToken(rft)
                 .build();
     }
 
-    private String[] createJWTToken(Long userId) {
-        Date now = new Date();
-        String accessToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuer("access")
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + Duration.ofDays(1).toMillis()))
-                .claim("id", userId)
-                .signWith(SignatureAlgorithm.HS256, "secret")
-                .compact();
 
-        String refreshToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuer("refresh")
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + Duration.ofDays(365).toMillis()))
-                .claim("id", userId)
-                .signWith(SignatureAlgorithm.HS256, "secret")
-                .compact();
-        System.out.println(accessToken);
-
-        return new String[]{accessToken, refreshToken};
-    }
 
     private void joinUser(String username, Long lastUserId) throws Exception {
         final String DEFAULT_NICKNAME = "책벌레";

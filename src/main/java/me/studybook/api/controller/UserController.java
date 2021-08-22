@@ -6,17 +6,16 @@ import me.studybook.api.dto.req.ReqLikeDto;
 import me.studybook.api.dto.req.ReqUserEditDto;
 import me.studybook.api.dto.res.ResPostsDto;
 import me.studybook.api.dto.res.ResUserDetailDto;
+import me.studybook.api.dto.res.ResUserEditDto;
 import me.studybook.api.dto.res.ResUserLoginDto;
-import me.studybook.api.service.LikeService;
-import me.studybook.api.service.PostService;
-import me.studybook.api.service.TokenService;
-import me.studybook.api.service.UserService;
-import me.studybook.api.service.UserKakoLoginService;
+import me.studybook.api.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,8 @@ public class UserController {
     private UserService userService;
     private PostService postService;
     private LikeService likeService;
+
+
 
     @PostMapping("/kakao-login")
     public ResponseEntity kakaoJoin(@RequestBody Map<String,String> loginDto, HttpServletResponse response) throws Exception {
@@ -52,17 +53,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity show(@PathVariable Long id) throws Exception {
+    public ResponseEntity show(@PathVariable Long id, @RequestParam(name="type", required = false) String type) throws Exception {
         /**
          * path로 받은 Id를 통해 유저 정보 응답
          */
-
         ResUserDetailDto user =  userService.show(id);
-        List<ResPostsDto> posts = postService.index(id);
+
         Map<String, Object> responses = new HashMap<>();
         responses.put("message", "Get user detail success");
         responses.put("user", user);
-        responses.put("posts", posts);
+
+        System.out.println(type);
+        if(type != null && type.equals("detail")){
+            List<ResPostsDto> posts = postService.index(id);
+            responses.put("posts", posts);
+        }
+
         responses.put("status", 200);
 
         return ResponseEntity.ok().body(responses);
@@ -80,9 +86,17 @@ public class UserController {
         Long tokenId = Long.parseLong(_tokenId);
         TokenService.isMatched(userEditDto.getId(), tokenId);
 
+        System.out.println("먼저 나오는지 확인");
         System.out.println(userEditDto);
+        ResUserEditDto resUserEditDto =  userService.edit(userEditDto);
 
-        return ResponseEntity.ok().body("responses");
+
+        Map<String, Object> responses = new HashMap<>();
+        responses.put("message", "user update success");
+        responses.put("token", resUserEditDto.getAct());
+        responses.put("status", 200);
+
+        return ResponseEntity.ok().body(responses);
     }
 
     @PostMapping("/liked/posts")

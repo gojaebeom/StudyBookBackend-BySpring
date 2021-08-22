@@ -15,13 +15,15 @@ public class ResUserDetailDto {
     private Long id;
     private String nickname;
     private String profile;
+    private String profilePreview;
     private String info;
 
     @Builder
-    public ResUserDetailDto(Long id, String nickname, String profile, String info) {
+    public ResUserDetailDto(Long id, String nickname, String profile, String profilePreview, String info) {
         this.id = id;
         this.nickname = nickname;
         this.profile = profile;
+        this.profilePreview = profilePreview;
         this.info = info;
     }
 
@@ -30,6 +32,7 @@ public class ResUserDetailDto {
                 .id(user.getId())
                 .nickname(user.getNickname())
                 .profile(user.getProfile())
+                .profilePreview(user.getProfilePreview())
                 .info(user.getInfo())
                 .build();
     }

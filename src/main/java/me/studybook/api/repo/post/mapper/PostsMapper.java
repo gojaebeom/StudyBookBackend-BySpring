@@ -11,6 +11,7 @@ import java.util.List;
 public interface PostsMapper {
     Long getId();
     String getTitle();
+    Long getViews();
     LocalDateTime getUpdatedAt();
     UserMapper getUser();
     List<PostTagMapper> getPostTags();
